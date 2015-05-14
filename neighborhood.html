@@ -13,9 +13,16 @@
 <body>
   <div class="container">
     <div class="row">
-    <div class="col-sm-2">Marker Menu</div>
-    <div class="col-sm-8"><div id="map-canvas"></div></div>
-    <div class="col-sm-2">Yelp Articles</div>
+      <div class="col-sm-2">
+        <h4>My Favorite Places</h4>
+        <ul data-bind="foreach: markerList">
+          <li data-bind="text: title"></li>
+        </ul>
+      </div>
+      <div class="col-sm-8">
+        <div id="map-canvas"></div>
+      </div>
+      <div class="col-sm-2">Yelp Articles</div>
     </div>
   </div>
   <script src="js/app.js"></script>
