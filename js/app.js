@@ -29,7 +29,8 @@ $(function() {
         },
 
         initCord : {},
-        markerList : null,
+        markerList : null,  // @type observableArray
+        searchResults : ko.observableArray(),
 
         init : function() {
             // restore model state from local storage or set to default
@@ -46,6 +47,23 @@ $(function() {
 
         saveInitCord : function(latlng) {
             localStorage.initCord = JSON.stringify(latlng);
+        },
+        
+        // populate searchResults, taking response from Google Place library as input
+        populateSearchResults : function(results) {
+            var resultArray = [];
+            results.forEach(function(result) {
+                // name, position, vicinity, place_id
+                resultArray.push({
+                   name: result.name,
+                   location: result.geometry.location,
+                   vicinity: result.vicinity,
+                   place_id: result.place_id
+                });
+            });
+            
+            // replace original array all at once for performance
+            model.searchResults(resultArray);
         }
     };
 
@@ -81,6 +99,34 @@ $(function() {
         }
     };
 
+    // view for collecting user inputs
+    var inputView = {
+        showSearch : function(event) {
+            $('#search-input').removeClass('hidden');
+            $('#filter-input').addClass('hidden');
+            this.clearActive();
+            $(event.target).addClass('active');
+        },
+        
+        showFilter : function(event) {
+            $('#search-input').addClass('hidden');
+            $('#filter-input').removeClass('hidden');
+            this.clearActive();
+            $(event.target).addClass('active');
+        },
+        
+        hideInputs : function() {
+            $('#search-input').addClass('hidden');
+            $('#filter-input').addClass('hidden');
+            this.clearActive();
+        },
+        
+        // clear active states for all buttons
+        clearActive : function() {
+            $('#menu-btns button').removeClass('active');
+        }
+    };
+    
     var ViewModel = function() {
         var self = this;
         
@@ -88,6 +134,8 @@ $(function() {
         mapView.init(model.initCord, model.markerList());
         
         self.markerList = model.markerList;
+        self.searchResults = model.searchResults;
+        
         /*
          * Necessary? // wire up map re-center callback
          * model.initCord.subscribe(function(latlng) { mapView.reCenter(latlng);
@@ -95,6 +143,43 @@ $(function() {
          */
         self.addMarker = function(data) {
             
+        };
+        
+        // show search input for adding favorite
+        self.showSearch = function(data, event) {
+            inputView.showSearch(event);
+        };
+        
+        // show filter input for filtering favorite
+        self.showFilter = function(data, event) {
+            inputView.showFilter(event);
+        };
+        
+        // hide all input boxes
+        self.hideInputs = function() {
+            inputView.hideInputs();
+        };
+        
+        // search the map using Google places library
+        self.search = function(data, event) {
+            var $input = $(event.target);
+            var map = mapView.map;
+            var request = {
+              bounds: map.getBounds(),
+              keyword: $input.val()
+            };
+            var service = new google.maps.places.PlacesService(map);
+            service.nearbySearch(request, self.displaySearchResult);
+        };
+        
+        self.displaySearchResult = function(results, status) {
+            if (status == google.maps.places.PlacesServiceStatus.OK) {
+                model.populateSearchResults(results);
+            } else {
+                //@Todo: add error handling later
+                alert('Oops!!');
+            }
+            console.dir(results);
         };
     };
 

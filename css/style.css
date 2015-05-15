@@ -1,3 +1,15 @@
+#left-panel {
+    margin-top: 12px;	
+}
+
+#inputs {
+    margin-top: 6px;	
+}
+
+#inputs .form-control-feedback {
+    pointer-events: auto;	
+}
+
 #map-canvas {
 	height: 100vh;
 }
