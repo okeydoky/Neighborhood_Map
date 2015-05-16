@@ -52,16 +52,18 @@ $(function() {
         // populate searchResults, taking response from Google Place library as input
         populateSearchResults : function(results) {
             var resultArray = [];
-            results.forEach(function(result) {
+            results.forEach(function(result, idx) {
                 // name, position, vicinity, place_id
-                resultArray.push({
-                   name: result.name,
-                   location: result.geometry.location,
-                   vicinity: result.vicinity,
-                   place_id: result.place_id
-                });
+                if (idx < 5) {
+                    resultArray.push({
+                        name : result.name,
+                        location : result.geometry.location,
+                        vicinity : result.vicinity,
+                        place_id : result.place_id
+                    });
+                }
             });
-            
+
             // replace original array all at once for performance
             model.searchResults(resultArray);
         }

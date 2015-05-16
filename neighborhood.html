@@ -43,7 +43,7 @@
         <div id="search-results">
           <ul class="list-group" data-bind="foreach: searchResults">
             <li class="list-group-item">
-              <span data-bind="text: name"></span>
+              <span data-bind="text: $index() + 1 + '. ' + name"></span>
               <br>
               <span data-bind="text: vicinity"></span>
             </li>
