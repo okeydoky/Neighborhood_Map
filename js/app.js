@@ -94,6 +94,10 @@ $(function() {
                    })); 
                 }, this);
             }
+            
+            // create search box
+            var searchInput = document.getElementById('map-searchbox');
+            map.controls[google.maps.ControlPosition.TOP_LEFT].push(searchInput);
         },
 
         reCenter : function(latlng) {
@@ -181,7 +185,6 @@ $(function() {
                 //@Todo: add error handling later
                 alert('Oops!!');
             }
-            console.dir(results);
         };
     };
 

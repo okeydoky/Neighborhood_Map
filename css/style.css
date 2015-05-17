@@ -13,3 +13,8 @@
 #map-canvas {
 	height: 100vh;
 }
+
+#map-searchbox {
+	width: 50%;
+	margin-top: 12px;
+}
