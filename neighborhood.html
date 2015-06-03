@@ -25,7 +25,7 @@
           <h4>You search for: <span data-bind="text: searchTerm"></span></h4>
           <ul class="list-group" data-bind="foreach: searchResults">
             <li class="list-group-item clickable" data-bind="click: $parent.itemClicked">
-              <span data-bind="text: $index() + 1 + '. ' + name"></span>
+              <span data-bind="text: $index() + 1 + '. ' + title"></span>
               <span class="glyphicon glyphicon-plus-sign pull-right icon add-to-fav"
                     data-bind="click: $parent.addFavorite"></span>
               <br>
@@ -56,14 +56,39 @@
         <div class="text-warning" data-bind="ifnot: markerList().length">
             I'm empty!! Add your favorite places here!
         </div>
+        <div class="text-warning" data-bind="if: searchError">
+            Oops, Something wrong with the search. Please try again.
+        </div>
       </div>
-      <div class="col-sm-9">
+      
+      <div id="map-container" class="col-sm-9">
         <input type="text" id="map-searchbox" class="form-control" 
                placeholder="Search Your Favorite Place. Ex. resturant"
                data-bind="value: searchTerm, event:{change: search}">
         <div id="map-canvas"></div>
       </div>
-      <!-- <div class="col-sm-2">Yelp Articles</div> -->
+      
+      <div id="right-panel" class="col-sm-3 hidden">
+        <button type="button" class="close" data-bind="click: hideYelpResult">
+          <span aria-hidden="true">&times;</span>
+          <span class="sr-only">Close</span>
+        </button>
+        <h4>Yelp Review for <span data-bind="text: yelpSearchTerm"></span></h4>
+        <ul class="list-group" data-bind="foreach: yelpResults">
+          <li class="list-group-item">
+            <img data-bind="attr: {src: imgURL}">
+            <img data-bind="attr: {src: ratingURL}">
+            <br>
+            <span data-bind="text: snippet"></span>
+          </li>
+        </ul>
+        <div class="text-warning" data-bind="ifnot: yelpResults().length">
+          No Yelp review is found...
+        </div>
+        <div class="text-warning" data-bind="if: yelpError">
+          Error when trying to connect to Yelp. Please try again later.
+        </div>
+      </div>
     </div>
   </div>
   <script src="js/app.js"></script>
