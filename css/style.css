@@ -18,3 +18,26 @@
 	width: 50%;
 	margin-top: 12px;
 }
+
+.icon {
+	font-size: 20px;
+	display: none;
+}
+
+li:hover .icon {
+	display: block;
+	cursor: pointer;
+}
+
+.add-to-fav {
+	color: rgba(32, 128, 16, 0.7);
+	margin-top: 10px;
+}
+
+.remove-from-fav {
+	color: rgba(240, 50, 50, 1);
+}
+
+.clickable {
+	cursor: pointer;
+}

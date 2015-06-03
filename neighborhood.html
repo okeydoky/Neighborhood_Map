@@ -6,7 +6,9 @@
   <title>Neighborhood Navigator</title>
   <script src="js/lib/jquery-2.1.4.min.js"></script>
   <script src="js/lib/knockout-3.3.0.js"></script>
-  <!-- <script src="https://maps.googleapis.com/maps/api/js"></script> -->
+  <script src="http://crypto-js.googlecode.com/svn/tags/3.1.2/build/rollups/hmac-sha1.js"></script>
+  <script src="http://crypto-js.googlecode.com/svn/tags/3.1.2/build/components/enc-base64-min.js"></script>
+  <script src="js/lib/oauth-1.0a.js"></script>
   <script src="https://maps.googleapis.com/maps/api/js?libraries=places"></script>
   <link rel="stylesheet" href="css/bootstrap.min.css">
   <link rel="stylesheet" href="css/style.css">
@@ -15,47 +17,50 @@
   <div class="container">
     <div class="row">
       <div id="left-panel" class="col-sm-3">
-        <div class="btn-group" id="menu-btns">
-          <button type="button" class="btn btn-primary" data-bind="click: showSearch">
-            <span class="glyphicon glyphicon-plus"></span> Add
+        <div class="hidden" id="search-results">
+          <button type="button" class="close" data-bind="click: hideSearchResult">
+            <span aria-hidden="true">&times;</span>
+            <span class="sr-only">Close</span>
           </button>
-          <button type="button" class="btn btn-primary" data-bind="click: showFilter">
-            <span class="glyphicon glyphicon-filter"></span> Filter
-          </button>
-          <button type="button" class="btn btn-primary" data-bind="click: hideInputs">
-            <span class="glyphicon glyphicon-remove"></span> Clear
-          </button>
-        </div>
-        <div class="form-group has-feedback" id="inputs">
-          <div class="input-group hidden" id="search-input">
-            <input type="text" class="form-control" data-bind="event:{change: search}">
-            <button type="button" class="btn btn-default form-control-feedback">
-              <span class="glyphicon glyphicon-search"></span>
-            </button>       
+          <h4>You search for: <span data-bind="text: searchTerm"></span></h4>
+          <ul class="list-group" data-bind="foreach: searchResults">
+            <li class="list-group-item clickable" data-bind="click: $parent.itemClicked">
+              <span data-bind="text: $index() + 1 + '. ' + name"></span>
+              <span class="glyphicon glyphicon-plus-sign pull-right icon add-to-fav"
+                    data-bind="click: $parent.addFavorite"></span>
+              <br>
+              <span data-bind="text: vicinity"></span>
+            </li>
+          </ul>
+          <div class="text-warning" data-bind="ifnot: searchResults().length">
+            Nothing is found. Try zooming out the map or search something more delicious like sushi... :-)
           </div>
-          <div class="input-group hidden" id="filter-input">
-            <input type="text" class="form-control" id="filter-by">
+        </div>
+        <h4>My Favorite Places</h4>
+        <div class="form-group has-feedback" id="inputs">
+          <div class="input-group" id="filter-input">
+            <input type="text" class="form-control" id="filter-by" placeholder="Filter your list"
+                   data-bind="textInput: filterTerm" >
             <button type="button" class="btn btn-default form-control-feedback">
               <span class="glyphicon glyphicon-filter"></span>
             </button>
           </div>
         </div>
-        <div id="search-results">
-          <ul class="list-group" data-bind="foreach: searchResults">
-            <li class="list-group-item">
-              <span data-bind="text: $index() + 1 + '. ' + name"></span>
-              <br>
-              <span data-bind="text: vicinity"></span>
-            </li>
-          </ul>
-        </div>
-        <h4>My Favorite Places</h4>
         <ul class="list-group" data-bind="foreach: markerList">
-          <li class="list-group-item" data-bind="text: title"></li>
+          <li class="list-group-item clickable" data-bind="click: $parent.itemClicked">
+            <span data-bind="text: title"></span>
+            <span class="glyphicon glyphicon-minus-sign pull-right icon remove-from-fav"
+                  data-bind="click: $parent.removeFavorite"></span>
+          </li>
         </ul>
+        <div class="text-warning" data-bind="ifnot: markerList().length">
+            I'm empty!! Add your favorite places here!
+        </div>
       </div>
       <div class="col-sm-9">
-        <input type="text" id="map-searchbox" class="form-control" placeholder="Search">
+        <input type="text" id="map-searchbox" class="form-control" 
+               placeholder="Search Your Favorite Place. Ex. resturant"
+               data-bind="value: searchTerm, event:{change: search}">
         <div id="map-canvas"></div>
       </div>
       <!-- <div class="col-sm-2">Yelp Articles</div> -->
