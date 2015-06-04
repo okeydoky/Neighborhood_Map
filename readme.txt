@@ -7,7 +7,7 @@ Features:
    Hover over any list item, a add/remove icon will appear to the right.
    Markers on the map will automatically reflect the changes.
 3. Search Yelp Review
-   Click on any list item and markes on the map, Yelp review will show up on right panel.
+   Click on any list item and markers on the map, Yelp review will show up on right panel.
 4. Filter
    Type in the filter input box, the favorite list will reflect the change as you type.
    Markers on the map will also update accordingly.
